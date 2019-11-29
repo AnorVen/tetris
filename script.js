@@ -6,7 +6,12 @@ const CANVAS_BG = '#fff';
 const PADDING = 2;
 
 class Tetris {
-  constructor(selector, width, height) {
+  constructor(
+    selector = 'canvas1',
+    width = CANVAS_WIDTH,
+    height = CANVAS_HEIGHT,
+    keyRuls = 'wasd'
+  ) {
     this.width = width;
     this.height = height
     this.fieldWidth = this.width / COL_NUMBERS;
@@ -17,10 +22,12 @@ class Tetris {
     this.canwas.height = this.height;
     this.map = this.getMap();
     this.block = this.getBlock(1) // getBlock(Math.floor(Math.random() * 10));
-  }
+    this.keyRuls = keyRuls;
+  };
 
   start = () => {
     console.log(this.block)
+    this.bind();
     requestAnimationFrame(this.tick)
   };
 
@@ -30,17 +37,17 @@ class Tetris {
     this.drawState();
     requestAnimationFrame(this.tick)
 
-  }
+  };
 
 
   cleanCanvas = () => {
     this.context.fillStyle = CANVAS_BG;
     this.context.strokeStyle = '#000'
-    this.context.rect(0,0, this.width,this.height)
+    this.context.rect(0, 0, this.width, this.height)
     this.context.fillRect(0, 0, this.width, this.height)
     this.context.stroke();
 
-  }
+  };
 
   getMap = () => {
     const map = [];
@@ -53,7 +60,7 @@ class Tetris {
       map.push(row)
     }
     return map
-  }
+  };
 
   drawState = () => {
     for (let i = 0; i < ROW_NUMBERS; i++) {
@@ -61,11 +68,11 @@ class Tetris {
         let field = this.map[i][j];
         if (field) {
           console.log(1)
-          this.drawField(i, j, field )
+          this.drawField(i, j, field)
         }
       }
     }
-  }
+  };
 
   drawField = (x, y, color = 'red') => {
     this.context.beginPath();
@@ -76,24 +83,24 @@ class Tetris {
       this.fieldWidth - 2 * PADDING,
       this.fieldHeigth - 2 * PADDING
     )
-  }
+  };
 
   drawBlock = () => {
-    for(const part of this.block.getIncludeParts()){
+    for (const part of this.block.getIncludeParts()) {
       this.drawField(part.x, part.y, this.block.color);
     }
-  }
+  };
 
 
-  getBlock = (type, color = 'red', x = 4, y = 0,) => {
-    console.log('getBlock')
+  getBlock = (type, color = 'red', x = Math.round(COL_NUMBERS / 2 - 1), y = 0,) => {
     const block = {
       type,
+      color,
       x,
       y,
-      color
-    }
-    const p = (dx, dy) => ({ x: block.x + dx, y: block.y + dy })
+    };
+
+    const p = (dx, dy) => ({x: block.x + dx, y: block.y + dy})
     block.getIncludeParts = () => {
 
       switch (block.type) {
@@ -105,21 +112,29 @@ class Tetris {
             p(1, 1)
           ]
         case 2:
-          console.log(block.type); break;
+          console.log(block.type);
+          break;
         case 3:
-          console.log(block.type); break;
+          console.log(block.type);
+          break;
         case 4:
-          console.log(block.type); break;
+          console.log(block.type);
+          break;
         case 5:
-          console.log(block.type); break;
+          console.log(block.type);
+          break;
         case 6:
-          console.log(block.type); break;
+          console.log(block.type);
+          break;
         case 7:
-          console.log(block.type); break;
+          console.log(block.type);
+          break;
         case 8:
-          console.log(block.type); break;
+          console.log(block.type);
+          break;
         case 9:
-          console.log(block.type); break;
+          console.log(block.type);
+          break;
         case 10:
           return [
             p(0, 0),
@@ -128,35 +143,90 @@ class Tetris {
             p(2, 0)
           ];
         case 11:
-            return [
-              p(0, 0),
-              p(0, -1),
-              p(0, 1),
-              p(0, 2)
-            ];
+          return [
+            p(0, 0),
+            p(0, -1),
+            p(0, 1),
+            p(0, 2)
+          ];
         default:
           console.log(block.type);
           return [];
       }
-    }
+    };
 
     block.getNextBlock = () => {
-      const {type, x, y, color} = block;
+      const {type, color, x, y,} = block;
       switch (type) {
         case 1:
-          return this.getBlock(type, x, y, color)
+          return this.getBlock(type, color, x, y,)
       }
     };
 
     block.getCopy = () => {
-      return this.getBlock(block.type, block.x, block.y, block.color)
+      return this.getBlock(block.type, block.color, block.x, block.y,)
     };
-    console.log(block)
     return block
   };
 
+  canBlockExist = (block) => {
+    const parts = block.getIncludeParts()
+    for (const part of parts) {
+      if (this.getField(part.x, part.y)) {
+        return false
+      }
+    }
+    return true
+  };
+
+  getField = (x, y) => {
+    if (this.map[y] === undefined || this.map[y][x] === undefined) {
+      return 'black'
+    }
+    return this.map[y][x]
+  };
+
+  bind = () => {
+    document.body.addEventListener('keydown', (e) => {
+      const keyType = this.keyRuls === 'wasd' ? 0 : 1;
+      const keyList = [
+        ['KeyW', 'KeyA', 'KeyS', 'KeyD'],
+        ['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'],
+        ['Numpad5', 'Numpad1', 'Numpad2', 'Numpad3'],
+      ];
+
+      let blockCopy = this.block.getCopy();
+      switch (e.code) {
+        case  keyList[keyType][0]:
+          blockCopy.y--;
+          break;
+        case   keyList[keyType][1]:
+          blockCopy.x--;
+          break;
+        case keyList[keyType][2]:
+          blockCopy.y++;
+          break;
+        case keyList[keyType][3]:
+          blockCopy.x++;
+          break;
+      }
+      if (this.canBlockExist(blockCopy)) {
+        this.block = blockCopy;
+      }
+    })
+  }
 
 }
 
-const tetris =new Tetris('canvas1', CANVAS_WIDTH, CANVAS_HEIGHT);
+const tetris = new Tetris();
 tetris.start();
+
+
+
+
+
+
+
+
+
+
