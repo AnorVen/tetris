@@ -5,13 +5,16 @@ const COL_NUMBERS = 10;
 const CANVAS_BG = '#e2e2e2';
 const PADDING = 2;
 const DOWN_TIME = 1000;
+const START_BLOCK_NUMBERS = [1, 3, 6, 7, 10, 13, 19]
+const COLORS = ['black', 'blue', 'green', 'yellow', 'red', 'pink', 'gray']
 
 class Tetris {
   constructor(
     selector = 'canvas1',
+    keyRuls = 'wasd',
     width = CANVAS_WIDTH,
     height = CANVAS_HEIGHT,
-    keyRuls = 'wasd'
+
   ) {
     this.width = width;
     this.height = height;
@@ -22,15 +25,21 @@ class Tetris {
     this.canwas.width = this.width;
     this.canwas.height = this.height;
     this.map = this.getMap();
-    this.blockType = this.checkBlockType(1, 19);
-    this.block = this.getBlock(this.blockType); // getBlock(Math.floor(Math.random() * 10));
+
     this.keyRuls = keyRuls;
-    this.downTime = this.getDownTime()
-    this.score = 0;
+    this.scope = 0;
+    this.level = 1;
+    this.tetrisScope = 0;
+    this.downTime = this.getDownTime();
+    this.blockType = () => this.getRandomFrom(START_BLOCK_NUMBERS);
+    this.blockColor = () => this.getRandomFrom(COLORS);
+    this.block = this.getBlock(this.blockType(), this.blockColor());
   };
 
 
-  checkBlockType = (min = 1, max = 19) => Math.floor(Math.random() * (max - min)) + min;
+  getRandomFrom = (arr = START_BLOCK_NUMBERS) => {
+    return arr[Math.floor(Math.random() * (arr.length - 1))]
+  };
 
   start = () => {
     this.bind();
@@ -47,7 +56,10 @@ class Tetris {
         this.saveBlock();
         const lines = this.clearLines();
         this.setScore(lines);
-        this.block = this.getBlock(this.checkBlockType())
+        this.block = this.getBlock(
+          this.blockType(),
+          this.blockColor()
+        )
       }
       this.downTime = timestamp + this.getDownTime()
     }
@@ -57,6 +69,12 @@ class Tetris {
     requestAnimationFrame(this.tick)
 
   };
+
+  getDownTime = () => {
+    return (100 + DOWN_TIME / this.level)
+  };
+
+
   saveBlock = () => {
     const parts = this.block.getIncludedParts();
     for (const part of parts) {
@@ -66,9 +84,17 @@ class Tetris {
   }
 
   setScore = (lines) => {
-    this.score += lines;
+    this.scope += lines;
+    if (lines >= 4) {
+      this.tetrisScope++;
+      this.scope += 3
+    }
     const selector = `#status${this.keyRuls === 'wasd' ? 1 : 2}`;
-    document.querySelector(`${selector} span[data-role="scope"]`).innerHTML = this.score * 100
+    const element = document.querySelector(selector);
+    this.level = 1 + parseInt(this.scope / 3);
+    element.querySelector('[data-role="scope"]').textContent = this.scope * 100;
+    element.querySelector('[data-role="level"]').textContent = this.level;
+    element.querySelector('[data-role="tetris"]').textContent = this.tetrisScope;
   }
 
   setField = (x, y, value) => {
@@ -101,9 +127,7 @@ class Tetris {
     }
     return lines
   }
-  getDownTime = () => {
-    return DOWN_TIME;
-  }
+
 
   cleanCanvas = () => {
     this.context.fillStyle = CANVAS_BG;
@@ -285,8 +309,8 @@ class Tetris {
       const keyType = this.keyRuls === 'wasd' ? 0 : 1;
       const keyList = [
         ['KeyW', 'KeyA', 'KeyS', 'KeyD'],
-        ['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'],
-        ['Numpad5', 'Numpad1', 'Numpad2', 'Numpad3'],
+        ['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight']
+      //  ['Numpad5', 'Numpad1', 'Numpad2', 'Numpad3'],
       ];
 
       if (e.code === keyList[keyType][0]) {
