@@ -14,7 +14,6 @@ class Tetris {
     keyRuls = 'wasd',
     width = CANVAS_WIDTH,
     height = CANVAS_HEIGHT,
-
   ) {
     this.width = width;
     this.height = height;
@@ -34,6 +33,11 @@ class Tetris {
     this.blockType = () => this.getRandomFrom(START_BLOCK_NUMBERS);
     this.blockColor = () => this.getRandomFrom(COLORS);
     this.block = this.getBlock(this.blockType(), this.blockColor());
+    this.selector = `#status${this.keyRuls === 'wasd' ? 1 : 2}`;
+    this.element = document.querySelector(this.selector);
+    this.scopeElem = this.element.querySelector('[data-role="scope"]')
+    this.levelElem = this.element.querySelector('[data-role="level"]')
+    this.tetrisScopeElem = this.element.querySelector('[data-role="tetris"]')
   };
 
 
@@ -50,7 +54,7 @@ class Tetris {
     if (timestamp >= this.downTime) {
       const blockCopy = this.block.getCopy();
       blockCopy.y = blockCopy.y + 1;
-      if (this.canBlockExist(blockCopy)) {
+      if (this.canBlockExists(blockCopy)) {
         this.block = blockCopy
       } else {
         this.saveBlock();
@@ -60,6 +64,10 @@ class Tetris {
           this.blockType(),
           this.blockColor()
         )
+        if(!this.canBlockExists(this.block)){
+          this.element.insertAdjacentHTML('beforeend',`<p>конец игры. всего очков ${this.scope * 100}</p>`);
+          return
+        }
       }
       this.downTime = timestamp + this.getDownTime()
     }
@@ -85,16 +93,15 @@ class Tetris {
 
   setScore = (lines) => {
     this.scope += lines;
+    this.level = 1 + parseInt(this.scope / 3);
     if (lines >= 4) {
       this.tetrisScope++;
       this.scope += 3
     }
-    const selector = `#status${this.keyRuls === 'wasd' ? 1 : 2}`;
-    const element = document.querySelector(selector);
-    this.level = 1 + parseInt(this.scope / 3);
-    element.querySelector('[data-role="scope"]').textContent = this.scope * 100;
-    element.querySelector('[data-role="level"]').textContent = this.level;
-    element.querySelector('[data-role="tetris"]').textContent = this.tetrisScope;
+
+    this.scopeElem.textContent = this.scope * 100;
+    this.levelElem.textContent = this.level;
+    this.tetrisScopeElem.textContent = this.tetrisScope;
   }
 
   setField = (x, y, value) => {
@@ -287,7 +294,7 @@ class Tetris {
   };
 
 
-  canBlockExist = (block) => {
+  canBlockExists = (block) => {
     const parts = block.getIncludedParts()
     for (const part of parts) {
       if (this.getField(part.x, part.y)) {
@@ -305,44 +312,75 @@ class Tetris {
   };
 
   bind = () => {
-    document.body.addEventListener('keydown', (e) => {
-      const keyType = this.keyRuls === 'wasd' ? 0 : 1;
-      const keyList = [
-        ['KeyW', 'KeyA', 'KeyS', 'KeyD'],
-        ['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight']
+    const keyType = this.keyRuls === 'wasd' ? 0 : 1;
+    const keyList = [
+      ['KeyW', 'KeyA', 'KeyS', 'KeyD'],
+      ['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight']
       //  ['Numpad5', 'Numpad1', 'Numpad2', 'Numpad3'],
-      ];
+    ];
+    this.listener(keyList[keyType][0], this.rotateBlock);
+    this.listener(keyList[keyType][1], this.moveBlockLeft);
+    this.listener(keyList[keyType][2], this.moveBlockDown);
+    this.listener(keyList[keyType][3], this.moveBlockRight);
+  };
 
-      if (e.code === keyList[keyType][0]) {
-        const blockRot = this.block.getNextBlock()
-        if (this.canBlockExist(blockRot)) {
-          this.block = blockRot
-        }
-      }
-      let blockCopy = this.block.getCopy();
-      switch (e.code) {
-        case   keyList[keyType][1]:
-          blockCopy.x--;
-          break;
-        case keyList[keyType][2]:
-          blockCopy.y++;
-          break;
-        case keyList[keyType][3]:
-          blockCopy.x++;
-          break;
-      }
-      if (this.canBlockExist(blockCopy)) {
-        this.block = blockCopy;
+  listener = (code, handler) => {
+    document.body.addEventListener('keydown', (e) => {
+      e.preventDefault();
+      if (e.code === code) {
+        handler()
       }
     })
-  }
+  };
 
+  // Свдиг блока влево
+  moveBlockLeft = () => {
+    const blockCopy = this.block.getCopy();
+    blockCopy.x = blockCopy.x - 1;
+    if (this.canBlockExists(blockCopy)) {
+      this.block = blockCopy
+    }
+  };
+
+  // Свдиг блока вправо
+  moveBlockRight = () => {
+    const blockCopy = this.block.getCopy();
+    blockCopy.x = blockCopy.x + 1;
+    if (this.canBlockExists(blockCopy)) {
+      this.block = blockCopy
+    }
+  };
+
+  // Поворот блока
+  rotateBlock = () => {
+    const blockCopy = this.block.getNextBlock();
+    if (this.canBlockExists(blockCopy)) {
+      this.block = blockCopy
+    }
+  };
+
+  // Свдиг блока вниз
+  moveBlockDown = () => {
+    const blockCopy = this.block.getCopy();
+    blockCopy.y = blockCopy.y + 1;
+    if (this.canBlockExists(blockCopy)) {
+      this.block = blockCopy
+    }
+  }
 }
 
-const tetris = new Tetris();
+const tetris = new Tetris(
+  'canvas1',
+  'wasd');
+const tetris1 = new Tetris(
+  'canvas2',
+  'arrow')
 tetris.start();
 
+tetris1.start()
 
+/// TODO сделать предпоказ фигур,
+// реализовать какую-нибудь комбобобму по 10 очков за точку.. подумать
 
 
 
