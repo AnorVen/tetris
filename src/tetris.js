@@ -368,33 +368,7 @@ class Tetris {
     }
   }
 }
-
-document.querySelector('.select1player').addEventListener('click', () => {
-
-  document.querySelector('.chosePlayer').remove()
-  document.querySelector('.canvas1').style.display = 'block'
-  const tetris = new Tetris(
-    'canvas1',
-    'wasd');
-  tetris.start();
-})
-
-document.querySelector('.select2player').addEventListener('click', () => {
-
-  document.querySelector('.chosePlayer').remove()
-  document.querySelector('.canvas1').style.display = 'block'
-  document.querySelector('.canvas2').style.display = 'block'
-  const tetris1 = new Tetris(
-    'canvas1',
-    'wasd');
-  const tetris2 = new Tetris(
-    'canvas2',
-    'arrow')
-
-  tetris1.start();
-  tetris2.start()
-})
-
+export default Tetris;
 
 /// TODO сделать предпоказ фигур,
 // реализовать какую-нибудь комбобобму по 10 очков за точку.. подумать

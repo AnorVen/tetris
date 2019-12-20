@@ -2,9 +2,12 @@
   "name": "tetris",
   "version": "1.0.0",
   "description": "",
-  "main": "script.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env PORT=10888 react-scripts start",
+    "build": "react-scripts build",
+    "now-build": "react-scripts build"
   },
   "repository": {
     "type": "git",
@@ -16,7 +19,20 @@
     "url": "https://github.com/AnorVen/tetris/issues"
   },
   "homepage": "https://github.com/AnorVen/tetris#readme",
+  "devDependencies": {
+    "cross-env": "^5.2.1",
+    "react-hot-loader": "^4.12.18",
+    "react-scripts": "^3.3.0"
+  },
   "dependencies": {
-    "@vkontakte/vk-connect": "^1.7.0"
+    "@vkontakte/icons": "^1.12.0",
+    "@vkontakte/vk-connect": "^1.7.0",
+    "@vkontakte/vkui": "^2.34.1",
+    "babel-eslint": "^10.0.3",
+    "chalk": "^2.4.2",
+    "core-js": "^3.6.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
   }
 }
