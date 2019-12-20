@@ -1,0 +1,30 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+.content{
+    margin: 0 auto;
+    min-width: 992px;
+
+}
+
+.wrap{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+.player{
+    width: 200px;
+}
+.canvas1{
+    display: none;
+}
+.canvas2{
+    display: none;
+}
+.gameWrap{
+    display: flex;
+    justify-content: space-between;
+    width: 600px;
+}
+

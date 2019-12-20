@@ -1,0 +1,22 @@
+{
+  "name": "tetris",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnorVen/tetris.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnorVen/tetris/issues"
+  },
+  "homepage": "https://github.com/AnorVen/tetris#readme",
+  "dependencies": {
+    "@vkontakte/vk-connect": "^1.7.0"
+  }
+}

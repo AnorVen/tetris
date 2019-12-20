@@ -64,8 +64,8 @@ class Tetris {
           this.blockType(),
           this.blockColor()
         )
-        if(!this.canBlockExists(this.block)){
-          this.element.insertAdjacentHTML('beforeend',`<p>конец игры. всего очков ${this.scope * 100}</p>`);
+        if (!this.canBlockExists(this.block)) {
+          this.element.insertAdjacentHTML('beforeend', `<p>конец игры. всего очков ${this.scope * 100}</p>`);
           return
         }
       }
@@ -369,21 +369,38 @@ class Tetris {
   }
 }
 
-const tetris = new Tetris(
-  'canvas1',
-  'wasd');
-const tetris1 = new Tetris(
-  'canvas2',
-  'arrow')
-tetris.start();
+document.querySelector('.select1player').addEventListener('click', () => {
 
-tetris1.start()
+  document.querySelector('.chosePlayer').remove()
+  document.querySelector('.canvas1').style.display = 'block'
+  const tetris = new Tetris(
+    'canvas1',
+    'wasd');
+  tetris.start();
+})
+
+document.querySelector('.select2player').addEventListener('click', () => {
+
+  document.querySelector('.chosePlayer').remove()
+  document.querySelector('.canvas1').style.display = 'block'
+  document.querySelector('.canvas2').style.display = 'block'
+  const tetris1 = new Tetris(
+    'canvas1',
+    'wasd');
+  const tetris2 = new Tetris(
+    'canvas2',
+    'arrow')
+
+  tetris1.start();
+  tetris2.start()
+})
+
 
 /// TODO сделать предпоказ фигур,
 // реализовать какую-нибудь комбобобму по 10 очков за точку.. подумать
 
-
-
+//Защищённый - LcGzh32Hr7jGelqxiGfS
+//Сервисный - f0a5093cf0a5093cf0a5093c4af0c395fdff0a5f0a5093cab6d8aee351e1d98f3806678
 
 
 
