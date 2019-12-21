@@ -6,15 +6,36 @@ import '@vkontakte/vkui/dist/vkui.css';
 import Tetris from "./tetris";
 import Home from './panels/Home';
 import Persik from './panels/Persik';
+import './style.css';
+import Player from "./components/Player";
+import PropTypes from "prop-types";
+import GamePleace from "./components/GamePleace";
+const play1 = {
+  name: 'name1',
+  scores: 0,
+  level: 1,
+  tetris: 0,
+  photo: 'https://magazeta.com/wp-content/uploads/2009/11/official.gif'
+}
+const play2 = {
+  name: 'name2',
+  scores: 0,
+  level: 1,
+  tetris: 0,
+  photo: 'https://magazeta.com/wp-content/uploads/2009/11/official.gif'
+}
 
 const App = () => {
   const [activePanel, setActivePanel] = useState('home');
   const [fetchedUser, setUser] = useState(null);
   const [popout, setPopout] = useState(<ScreenSpinner size='large'/>);
-  const [selectPlayers, select] = useState(false)
+  const [selectPlayers, select] = useState(true)
 
   useEffect(() => {
-    connect.subscribe(({detail: {type, data}}) => {
+    connect.subscribe((
+      {
+        detail: {     type, data}
+      }) => {
       if (type === 'VKWebAppUpdateConfig') {
         const schemeAttribute = document.createAttribute('scheme');
         schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
@@ -36,69 +57,25 @@ const App = () => {
   };
   const playerOne = () => {
     select(true)
-    document.querySelector('.canvas1').style.display = 'block'
-    const tetris = new Tetris(
-      'canvas1',
-      'wasd');
-    tetris.start();
   };
 
-  const playerTwo = () => {
-    select(true)
-    document.querySelector('.canvas1').style.display = 'block'
-    document.querySelector('.canvas2').style.display = 'block'
-    const tetris1 = new Tetris(
-      'canvas1',
-      'wasd');
-    const tetris2 = new Tetris(
-      'canvas2',
-      'arrow')
-
-    tetris1.start();
-    tetris2.start()
-  }
-
   return (
-  	<section className="content">
-      <div className="wrap">
-        <div className="player player1">
-          <div className="photo">
-            <img src="" alt="">
-              <p className="name"></p>
+    <div className="wrap">
+      {
+        selectPlayers ?
+          <>
+            <Player play={play2}/>
+            <div className="gameWrap">
+              <GamePleace/>
+            </div>
+          </>
+          : <div className="chosePlayer">
+            <button className="select1player" onClick={playerOne}>start</button>
           </div>
-          <ul id="status1">
-            <li>Счет: <span data-role="scope">0</span></li>
-            <li>Уровень: <span data-role="level">1</span></li>
-            <li>Тетрисов: <span data-role="tetris">0</span></li>
-          </ul>
-        </div>
-        <div className="gameWrap">
-          <div className="chosePlayer" style="display: ${selectPlayers ? 'none' : 'block'}">
-            <button className="select1player" onClick={playerOne}>1</button>
-            <button className="select2player" onClick={playerTwo}>2</button>
-          </div>
-          <div className="canvas1">
-            <canvas id="canvas1">Ваш браузер не поддерживает canvas.</canvas>
-          </div>
-          <div className="canvas2">
-            <canvas id="canvas2">Ваш браузер не поддерживает canvas.</canvas>
-          </div>
-        </div>
-
-        <div className="player player2">
-          <div className="photo">
-            <img src="" alt="">
-              <p className="name"></p>
-          </div>
-          <ul id="status2">
-            <li>Счет: <span data-role="scope">0</span></li>
-            <li>Уровень: <span data-role="level">1</span></li>
-            <li>Тетрисов: <span data-role="tetris">0</span></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-);}
+      }
+    </div>
+  )
+};
 
 export default App;
 

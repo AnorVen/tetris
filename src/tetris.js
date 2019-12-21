@@ -19,7 +19,7 @@ class Tetris {
     this.height = height;
     this.fieldWidth = this.width / COL_NUMBERS;
     this.fieldHeigth = this.height / ROW_NUMBERS;
-    this.canwas = document.querySelector(`#${selector}`);
+    this.canwas = selector;
     this.context = this.canwas.getContext('2d');
     this.canwas.width = this.width;
     this.canwas.height = this.height;
@@ -35,9 +35,9 @@ class Tetris {
     this.block = this.getBlock(this.blockType(), this.blockColor());
     this.selector = `#status${this.keyRuls === 'wasd' ? 1 : 2}`;
     this.element = document.querySelector(this.selector);
-    this.scopeElem = this.element.querySelector('[data-role="scope"]')
+  /*  this.scopeElem = this.element.querySelector('[data-role="scope"]')
     this.levelElem = this.element.querySelector('[data-role="level"]')
-    this.tetrisScopeElem = this.element.querySelector('[data-role="tetris"]')
+    this.tetrisScopeElem = this.element.querySelector('[data-role="tetris"]')*/
   };
 
 
@@ -92,7 +92,7 @@ class Tetris {
   }
 
   setScore = (lines) => {
-    this.scope += lines;
+ /*   this.scope += lines;
     this.level = 1 + parseInt(this.scope / 3);
     if (lines >= 4) {
       this.tetrisScope++;
@@ -101,7 +101,7 @@ class Tetris {
 
     this.scopeElem.textContent = this.scope * 100;
     this.levelElem.textContent = this.level;
-    this.tetrisScopeElem.textContent = this.tetrisScope;
+    this.tetrisScopeElem.textContent = this.tetrisScope;*/
   }
 
   setField = (x, y, value) => {
