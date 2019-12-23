@@ -10,6 +10,21 @@ import './style.css';
 import Player from "./components/Player";
 import PropTypes from "prop-types";
 import GamePleace from "./components/GamePleace";
+import firebase from 'firebase/app';
+import 'firebase/auth'
+import 'firebase/database'
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3KQVXLX2kMb5fuK5hG8MTCkDMuWagCgY",
+  authDomain: "tetr-e831c.firebaseapp.com",
+  databaseURL: "https://tetr-e831c.firebaseio.com",
+  projectId: "tetr-e831c",
+  storageBucket: "tetr-e831c.appspot.com",
+  messagingSenderId: "20223957795",
+  appId: "1:20223957795:web:76229799fd1a3646d90a96"
+};
+
+
 const play1 = {
   name: 'name1',
   scores: 0,
@@ -26,6 +41,7 @@ const play2 = {
 }
 
 const App = () => {
+  firebase.initializeApp(firebaseConfig);
   const [activePanel, setActivePanel] = useState('home');
   const [fetchedUser, setUser] = useState(null);
   const [popout, setPopout] = useState(<ScreenSpinner size='large'/>);

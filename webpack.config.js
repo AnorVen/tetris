@@ -95,7 +95,7 @@ module.exports = (env, argv) => {
     devServer: {
       contentBase: path.join(__dirname, './dist'),
       compress: false,
-      port: 9000,
+      port: 10888,
       historyApiFallback: true,
     },
     devtool: isDev ? 'cheap-module-eval-source-map' : false,

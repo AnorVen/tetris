@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "homepage": "https://AnorVen.github.io/tetris",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --mode development --open  --hot",
     "build": "webpack --mode production",
-    "now-build": "react-scripts build"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -33,7 +35,6 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "homepage": "https://github.com/AnorVen/tetris#readme",
   "devDependencies": {
     "@babel/core": "^7.6.4",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
@@ -81,12 +82,15 @@
     "babel-eslint": "^10.0.3",
     "chalk": "^2.4.2",
     "core-js": "^3.6.0",
+    "express": "^4.17.1",
+    "firebase": "^7.6.1",
+    "firebase-admin": "^8.9.0",
+    "mobx": "^5.14.2",
+    "mobx-react": "^6.1.4",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0",
     "react-bootstrap": "^1.0.0-beta.14",
-    "react-router-dom": "^5.1.2",
-    "mobx": "^5.14.2",
-    "mobx-react": "^6.1.4"
+    "react-dom": "^16.12.0",
+    "react-router-dom": "^5.1.2"
   }
 }
