@@ -97,6 +97,7 @@ module.exports = (env, argv) => {
       compress: false,
       port: 10888,
       historyApiFallback: true,
+      https: true
     },
     devtool: isDev ? 'cheap-module-eval-source-map' : false,
   }

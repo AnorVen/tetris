@@ -32,13 +32,6 @@ const play1 = {
   tetris: 0,
   photo: 'https://magazeta.com/wp-content/uploads/2009/11/official.gif'
 }
-const play2 = {
-  name: 'name2',
-  scores: 0,
-  level: 1,
-  tetris: 0,
-  photo: 'https://magazeta.com/wp-content/uploads/2009/11/official.gif'
-}
 
 const App = () => {
   firebase.initializeApp(firebaseConfig);
@@ -50,7 +43,7 @@ const App = () => {
   useEffect(() => {
     connect.subscribe((
       {
-        detail: {     type, data}
+        detail: {type, data}
       }) => {
       if (type === 'VKWebAppUpdateConfig') {
         const schemeAttribute = document.createAttribute('scheme');
@@ -60,7 +53,15 @@ const App = () => {
     });
 
     async function fetchData() {
+      const init = connect.send("VKWebAppInit");
       const user = await connect.sendPromise('VKWebAppGetUserInfo');
+      console.log(222, user)
+      /*{
+"type": "VKWebAppAllowNotificationsResult",
+"data": {
+  "result": true
+}
+}*/
       setUser(user);
       setPopout(null);
     }
@@ -80,7 +81,7 @@ const App = () => {
       {
         selectPlayers ?
           <>
-            <Player play={play2}/>
+            <Player play={play1}/>
             <div className="gameWrap">
               <GamePleace/>
             </div>
@@ -94,4 +95,3 @@ const App = () => {
 };
 
 export default App;
-

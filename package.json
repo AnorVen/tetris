@@ -6,10 +6,10 @@
   "homepage": "https://AnorVen.github.io/tetris",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --mode development --open  --hot",
+    "start": "webpack-dev-server --https --mode development --open  --hot --cert ./localhost.pem --key ./localhost-key.pem",
     "build": "webpack --mode production",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "npm run build && firebase deploy"
   },
   "repository": {
     "type": "git",

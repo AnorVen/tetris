@@ -1,27 +1,36 @@
-body{
-    margin: 0;
-    padding: 0;
+body {
+  margin: 0;
+  padding: 0;
 }
-.content{
-    margin: 0 auto;
-    min-width: 992px;
+
+#root {
+  height: auto !important;
+}
+
+.content {
+  margin: 0 auto;
+  min-width: 992px;
 
 }
 
-.wrap{
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
+.wrap {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  flex-direction: column;
 }
-.player{
-    width: 200px;
+
+.player {
+  width: 200px;
 }
-.gameWrap{
-    display: flex;
-    justify-content: space-between;
-    width: 600px;
+
+.gameWrap {
+  display: flex;
+  justify-content: space-between;
+  width: 600px;
 }
-.chosePlayer{
-    margin:  0 auto;
-    padding-top: 30px;
+
+.chosePlayer {
+  margin: 0 auto;
+  padding-top: 30px;
 }
