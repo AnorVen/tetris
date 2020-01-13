@@ -1,34 +1,38 @@
-import React, {Component} from 'react'
-import {action, computed, observable, observe} from 'mobx';
+import {action, computed, observable, runInAction} from 'mobx';
 
+export default class User  {
+  constructor(rootStore){
+    this.rootStore = rootStore;
+    this.api = this.rootStore.api.products;
+  }
+  @observable playersValue =  1;
 
-class User extends Component{
-   user1 = {
-     name: '',
-     photo: '',
-
+  @observable user1 = {
+    name: '',
+    photo: '',
     scope: 0,
     tetris: 0,
     level: 1,
     isPlay: false
 
   }
-   user2 = {
+
+  @observable user2 = {
+    name: '',
+    photo: '',
     scope: 0,
     tetris: 0,
     level: 1,
     isPlay: false
   }
 
-  setUser1 = (userData)=>{
-    this.user1 = {...this.user1, ...userData}
+  @action selectPlayersVal = (val)=>{
+    return  this.playersValue = val === 1 ? 1: 2;
   }
-  setUser2 = (userData)=>{
-    this.user2 = {...this.user2, ...userData}
+  @action setUser1 = (userData) => {
+   return  this.user1 = {...this.user1, ...userData}
   }
-  render() {
-    return null
+  @action setUser2 = (userData) => {
+    return this.user2 = {...this.user2, ...userData}
   }
 }
-
-export default User

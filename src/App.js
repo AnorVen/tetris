@@ -1,11 +1,8 @@
-import React, {useState, useEffect} from 'react';
+import React, {Component} from 'react';
 import connect from '@vkontakte/vk-connect';
 import View from '@vkontakte/vkui/dist/components/View/View';
 import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
 import '@vkontakte/vkui/dist/vkui.css';
-import Tetris from "./tetris";
-import Home from './panels/Home';
-import Persik from './panels/Persik';
 import './style.css';
 import Player from "./components/Player";
 import PropTypes from "prop-types";
@@ -13,6 +10,7 @@ import GamePleace from "./components/GamePleace";
 import firebase from 'firebase/app';
 import 'firebase/auth'
 import 'firebase/database'
+import RootStore from "./Store/RootStore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD3KQVXLX2kMb5fuK5hG8MTCkDMuWagCgY",
@@ -24,74 +22,131 @@ const firebaseConfig = {
   appId: "1:20223957795:web:76229799fd1a3646d90a96"
 };
 
+class App extends Component {
+  state = {
+    activePanel: 'home',
+    fetchedUser: null,
+    popout: <ScreenSpinner size='large'/>,
+    selectPlayers: true,
+  }
 
-const play1 = {
-  name: 'name1',
-  scores: 0,
-  level: 1,
-  tetris: 0,
-  photo: 'https://magazeta.com/wp-content/uploads/2009/11/official.gif'
-}
+  setActivePanel = (active) => {
+    this.setState({
+      activePanel: active
+    })
+  }
 
-const App = () => {
-  firebase.initializeApp(firebaseConfig);
-  const [activePanel, setActivePanel] = useState('home');
-  const [fetchedUser, setUser] = useState(null);
-  const [popout, setPopout] = useState(<ScreenSpinner size='large'/>);
-  const [selectPlayers, select] = useState(true)
+  setUser = (user) => {
+    console.log(user)
+    this.setState({
+      user: user
+    })
+  }
 
-  useEffect(() => {
-    connect.subscribe((
+  setPopout = (popout) => {
+    this.setState({
+      popout
+    })
+  }
+
+  select = (sel) => {
+    this.setState({
+      selectPlayers: sel
+    })
+  }
+
+  componentDidMount() {
+    firebase.initializeApp(firebaseConfig);
+    connect.send("VKWebAppGetUserInfo", {});
+    // User.setUser1(play1)
+    connect.send("VKWebAppGetAuthToken",
       {
-        detail: {type, data}
-      }) => {
-      if (type === 'VKWebAppUpdateConfig') {
-        const schemeAttribute = document.createAttribute('scheme');
-        schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
-        document.body.attributes.setNamedItem(schemeAttribute);
-      }
-    });
+        "app_id": 7257666, // - tet
+        // 7254806, // - tetris
+        "scope": ""
+      });
 
-    async function fetchData() {
-      const init = connect.send("VKWebAppInit");
-      const user = await connect.sendPromise('VKWebAppGetUserInfo');
-      console.log(222, user)
-      /*{
-"type": "VKWebAppAllowNotificationsResult",
-"data": {
-  "result": true
-}
-}*/
-      setUser(user);
-      setPopout(null);
+
+
+    connect.subscribe((event) => {
+      switch (event.detail.type) {
+        case 'VKWebAppUpdateConfig' :
+          const schemeAttribute = document.createAttribute('scheme');
+          schemeAttribute.value = data.scheme ? data.scheme : 'client_light';
+          document.body.attributes.setNamedItem(schemeAttribute);
+          break;
+
+        case 'VKWebAppAccessTokenFailed':
+          console.log('event Fal', event);
+          break;
+        case 'VKWebAppAccessTokenReceived':
+          console.log('token', event);
+          break;
+        case 'VKWebAppGetUserInfoResult':
+          console.log('info', event);
+          this.setUser(event.detail.data);
+          break;
+        default:
+          console.log('def', event)
+      }
+    })
+
+    /*
+        this.fetchData().then(r => {
+          console.log(222, r)
+          this.setUser(r);
+          this.setPopout(null);
+        });*/
+  }
+
+
+  fetchData = async () => {
+    const init = connect.send("VKWebAppInit");
+    const user = await connect.sendPromise('VKWebAppGetUserInfo');
+    return user
+
+    /*    {
+    "type": "VKWebAppAllowNotificationsResult",
+    "data": {
+    "result": true
     }
+    }*/
 
-    fetchData();
-  }, []);
+  }
 
-  const go = e => {
-    setActivePanel(e.currentTarget.dataset.to);
+  selectPlayers = (val) => {
+    this.select(true)
+    User.selectPlayersVal(val)
   };
-  const playerOne = () => {
-    select(true)
+  user1 = {
+    name: '',
+    photo: '',
+    scope: 0,
+    tetris: 0,
+    level: 1,
+    isPlay: false
   };
-
-  return (
-    <div className="wrap">
-      {
-        selectPlayers ?
-          <>
-            <Player play={play1}/>
-            <div className="gameWrap">
-              <GamePleace/>
+  render() {
+    return (
+      <div className="wrap">
+        {
+          this.state.selectPlayers ?
+            <>
+              <Player play={this.state.user}/>
+              <div className="gameWrap">
+                <GamePleace/>
+              </div>
+            </>
+            : <div className="chosePlayer">
+              <button className="select1player" onClick={() => this.selectPlayers(1)}>start 1 player
+              </button>
+              <button className="select1player" onClick={() => this.selectPlayers(2)}>start 2 player
+              </button>
             </div>
-          </>
-          : <div className="chosePlayer">
-            <button className="select1player" onClick={playerOne}>start</button>
-          </div>
-      }
-    </div>
-  )
+        }
+      </div>
+    )
+  }
 };
 
 export default App;

@@ -1,23 +1,24 @@
-import React, { Component } from 'react'
-import {action, computed, observable, observe} from 'mobx';
+import {action, computed, observable, runInAction} from 'mobx';
 
-class Scopes extends Component {
-  scopes = 0;
+export default class Scopes {
+  constructor(rootStore){
+    this.rootStore = rootStore;
+    this.api = this.rootStore.api.cart;
+    this.token = this.rootStore.storage.getItem('cartToken');
+  }
 
-   tetris = 0;
-level = 1 + this.scopes % 3;
+  @observable scopes = 0;
 
-addScopes = (scope) => {
+  @observable tetris = 0;
+
+  @computed level = 1 + this.scopes % 3;
+
+  @action addScopes = (scope) => {
     this.scopes += scope
   }
 
-addTetris = (tetris) => {
+  @action addTetris = (tetris) => {
     this.tetris += tetris;
     this.addScopes(4)
   }
-  render() {
-  return null
-  }
 }
-
-export default Scopes()

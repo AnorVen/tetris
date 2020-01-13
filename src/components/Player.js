@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import PlayerData from "./PlayerData";
 
-const Player = ({name, scores, level, tetris, photo}) => {
-
+const Player = ({scores, level, tetris, user}) => {
   return (
     <div className="player">
-      <div className="photo">
-        <img src={photo} alt=""/>
-        <p className="name">{name}</p>
-      </div>
+      <PlayerData id={1}
+                  go={() => {}}
+                  fetchedUser={user}/>
       <ul id="status">
         <li>Счет: <span data-role="scope">{scores}</span></li>
         <li>Уровень: <span data-role="level">{level}</span></li>
@@ -19,11 +18,10 @@ const Player = ({name, scores, level, tetris, photo}) => {
 };
 
 Player.propTypes = {
-  name: PropTypes.string,
+  user: PropTypes.object,
   scores: PropTypes.number,
   level: PropTypes.number,
   tetris: PropTypes.number,
-  photo:PropTypes.string
 };
 
 export default Player;

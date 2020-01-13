@@ -97,7 +97,14 @@ module.exports = (env, argv) => {
       compress: false,
       port: 10888,
       historyApiFallback: true,
-      https: true
+      /*proxy: {
+        '/reactcourseapi/!**': {
+          target:'https://tetr-e831c.firebaseio.com',
+          secure: false,
+          changeOrigin: true
+        }
+      }*/
+   //  https: true
     },
     devtool: isDev ? 'cheap-module-eval-source-map' : false,
   }
