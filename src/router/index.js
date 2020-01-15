@@ -1,6 +1,6 @@
-import AppHome from '~/components/products/list';
-import AppGame from '~/containers/cart';
-import AppResult from '~/components/result';
+import AppHome from '~/components/home';
+import AppGame from '~/components/game';
+import AppResult from '~/components/results';
 import AppError404 from '~/components/errors/404';
 
 const routes = [
@@ -11,8 +11,8 @@ const routes = [
       exact: true
    },
    {
-      name: 'cart',
-      path: '/cart',
+      name: 'game',
+      path: '/game',
       component: AppGame,
       exact: true
    },

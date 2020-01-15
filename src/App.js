@@ -1,16 +1,15 @@
 import React, {Component} from 'react';
 import connect from '@vkontakte/vk-connect';
-import View from '@vkontakte/vkui/dist/components/View/View';
-import ScreenSpinner from '@vkontakte/vkui/dist/components/ScreenSpinner/ScreenSpinner';
 import '@vkontakte/vkui/dist/vkui.css';
 import './style.css';
-import Player from "./components/Player";
 import PropTypes from "prop-types";
-import GamePleace from "./components/GamePleace";
 import firebase from 'firebase/app';
 import 'firebase/auth'
 import 'firebase/database'
-import RootStore from "./Store/RootStore";
+import RootStore from "./store";
+import withStore from './hocs/withStore'
+import { BrowserRouter, Route, Switch, NavLink } from 'react-router-dom';
+import { routes, routesMap, urlBuilder} from './router'
 
 const firebaseConfig = {
   apiKey: "AIzaSyD3KQVXLX2kMb5fuK5hG8MTCkDMuWagCgY",
@@ -23,51 +22,8 @@ const firebaseConfig = {
 };
 
 class App extends Component {
-  state = {
-    activePanel: 'home',
-    fetchedUser: null,
-    popout: <ScreenSpinner size='large'/>,
-    selectPlayers: true,
-  }
-
-  setActivePanel = (active) => {
-    this.setState({
-      activePanel: active
-    })
-  }
-
-  setUser = (user) => {
-    console.log(user)
-    this.setState({
-      user: user
-    })
-  }
-
-  setPopout = (popout) => {
-    this.setState({
-      popout
-    })
-  }
-
-  select = (sel) => {
-    this.setState({
-      selectPlayers: sel
-    })
-  }
-
   componentDidMount() {
     firebase.initializeApp(firebaseConfig);
-    connect.send("VKWebAppGetUserInfo", {});
-    // User.setUser1(play1)
-    connect.send("VKWebAppGetAuthToken",
-      {
-        "app_id": 7257666, // - tet
-        // 7254806, // - tetris
-        "scope": ""
-      });
-
-
-
     connect.subscribe((event) => {
       switch (event.detail.type) {
         case 'VKWebAppUpdateConfig' :
@@ -84,69 +40,66 @@ class App extends Component {
           break;
         case 'VKWebAppGetUserInfoResult':
           console.log('info', event);
-          this.setUser(event.detail.data);
+          this.props.stores.users.setUser1(event.detail.data)
           break;
         default:
           console.log('def', event)
       }
     })
-
-    /*
-        this.fetchData().then(r => {
-          console.log(222, r)
-          this.setUser(r);
-          this.setPopout(null);
-        });*/
+    connect.send("VKWebAppGetUserInfo", {});
+    connect.send("VKWebAppGetAuthToken",
+      {
+        "app_id": 7283256,
+        "scope": "friends"
+      })
+    connect.send("VKWebAppDenyNotifications", {});
   }
 
+  routesItems = routes.map((route) => {
+    return <Route
+      key={route.path}
+      path={route.path}
+      component={route.component}
+      exact={route.exact}
+    />
+  });
 
-  fetchData = async () => {
-    const init = connect.send("VKWebAppInit");
-    const user = await connect.sendPromise('VKWebAppGetUserInfo');
-    return user
 
-    /*    {
-    "type": "VKWebAppAllowNotificationsResult",
-    "data": {
-    "result": true
-    }
-    }*/
-
-  }
-
-  selectPlayers = (val) => {
-    this.select(true)
-    User.selectPlayersVal(val)
-  };
-  user1 = {
-    name: '',
-    photo: '',
-    scope: 0,
-    tetris: 0,
-    level: 1,
-    isPlay: false
-  };
   render() {
     return (
+      <BrowserRouter>
       <div className="wrap">
-        {
-          this.state.selectPlayers ?
-            <>
-              <Player play={this.state.user}/>
-              <div className="gameWrap">
-                <GamePleace/>
-              </div>
-            </>
-            : <div className="chosePlayer">
-              <button className="select1player" onClick={() => this.selectPlayers(1)}>start 1 player
-              </button>
-              <button className="select1player" onClick={() => this.selectPlayers(2)}>start 2 player
-              </button>
-            </div>
-        }
+        <nav>
+            <ul className="list-group">
+              <li className="list-group-item">
+                <NavLink to={routesMap.home}
+                         exact={true}
+                         activeClassName
+                >Home</NavLink>
+              </li>
+              <li className="list-group-item">
+                <NavLink to={routesMap.game}
+                         exact={true}
+                         activeClassName>
+                  Game
+                </NavLink>
+              </li>
+              <li className="list-group-item">
+                <NavLink to={routesMap.result}
+                         exact={true}
+                         activeClassName>
+                 Таблица рекордов
+                </NavLink>
+              </li>
+            </ul>
+        </nav>
+          <Switch>
+            {this.routesItems}
+          </Switch>
       </div>
+      </BrowserRouter>
     )
   }
 };
 
-export default App;
+export default withStore(App);

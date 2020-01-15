@@ -5,7 +5,7 @@ import User from "./User";
 import * as products from '~/api/products';
 import * as cart from '~/api/cart';
 
-class RootStore{
+class Index{
   constructor(){
     this.api = {
       products,
@@ -14,9 +14,9 @@ class RootStore{
 
     this.storage = window.localStorage;
 
-    this.cart = new Scopes(this);
-    this.products = new User(this);
+    this.scopes = new Scopes(this);
+    this.users = new User(this);
   }
 }
 
-export default new RootStore();
+export default new Index();

@@ -8,23 +8,31 @@ export default class User  {
   @observable playersValue =  1;
 
   @observable user1 = {
-    name: '',
+    first_name: '',
+    last_name: '',
     photo: '',
     scope: 0,
     tetris: 0,
-    level: 1,
-    isPlay: false
-
+    level: 0,
+    isPlay: false,
+    id: 0,
+    photo_200: '',
+    city:{},
   }
 
   @observable user2 = {
-    name: '',
+    first_name: '',
+    last_name: '',
     photo: '',
     scope: 0,
     tetris: 0,
-    level: 1,
-    isPlay: false
+    level: 0,
+    isPlay: false,
+    id: 0,
+    photo_200: ''
   }
+
+
 
   @action selectPlayersVal = (val)=>{
     return  this.playersValue = val === 1 ? 1: 2;
