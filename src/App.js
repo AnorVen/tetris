@@ -42,6 +42,9 @@ class App extends Component {
           console.log('info', event);
           this.props.stores.users.setUser1(event.detail.data)
           break;
+        case 'VKWebAppAllowNotificationsResult':
+          console.log('Noti', event);
+          break;
         default:
           console.log('def', event)
       }
@@ -52,7 +55,7 @@ class App extends Component {
         "app_id": 7283256,
         "scope": "friends"
       })
-    connect.send("VKWebAppDenyNotifications", {});
+    connect.send("VKWebAppAllowNotifications", {});
   }
 
   routesItems = routes.map((route) => {
