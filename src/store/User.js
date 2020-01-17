@@ -7,7 +7,7 @@ export default class User  {
   }
   @observable playersValue =  1;
 
-  @observable user1 = {
+  @observable user = {
     first_name: '',
     last_name: '',
     photo: '',
@@ -18,29 +18,18 @@ export default class User  {
     id: 0,
     photo_200: '',
     city:{},
+    scopes: null
   }
 
-  @observable user2 = {
-    first_name: '',
-    last_name: '',
-    photo: '',
-    scope: 0,
-    tetris: 0,
-    level: 0,
-    isPlay: false,
-    id: 0,
-    photo_200: ''
+  @action setScopes = (val)=>{
+      this.user.scopes = val;
   }
-
-
 
   @action selectPlayersVal = (val)=>{
     return  this.playersValue = val === 1 ? 1: 2;
   }
-  @action setUser1 = (userData) => {
-   return  this.user1 = {...this.user1, ...userData}
+  @action setUser = (userData) => {
+   return  this.user = {...this.user, ...userData}
   }
-  @action setUser2 = (userData) => {
-    return this.user2 = {...this.user2, ...userData}
-  }
+
 }

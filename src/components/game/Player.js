@@ -8,7 +8,7 @@ import withStore from "../../hocs/withStore";
 
 const Player = (props) => {
   console.log(props.stores)
-  const fetchedUser = props.stores.users.user1;
+  const fetchedUser = props.stores.user1.user;
   console.log(fetchedUser)
   return (
     <div className="player">

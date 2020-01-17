@@ -1,3 +1,5 @@
+import rootStore from './store'
+
 const CANVAS_WIDTH = 300;
 const CANVAS_HEIGHT = 600;
 const ROW_NUMBERS = 20;
@@ -11,33 +13,36 @@ const COLORS = ['black', 'blue', 'green', 'yellow', 'red', 'pink', 'gray']
 class Tetris {
   constructor(
     selector = 'canvas1',
-    keyRuls = 'wasd',
+    player = 1,
     width = CANVAS_WIDTH,
     height = CANVAS_HEIGHT,
   ) {
+
+    this.player = player;
     this.width = width;
     this.height = height;
     this.fieldWidth = this.width / COL_NUMBERS;
     this.fieldHeigth = this.height / ROW_NUMBERS;
     this.canwas = selector;
     this.context = this.canwas.getContext('2d');
-    this.canwas.width = this.width;
-    this.canwas.height = this.height;
+    this.canwas = {
+      width: this.width,
+      height: this.height
+    };
     this.map = this.getMap();
-
-    this.keyRuls = keyRuls;
-    this.scope = 0;
-    this.level = 1;
-    this.tetrisScope = 0;
+    this.pause = false;
     this.downTime = this.getDownTime();
     this.blockType = () => this.getRandomFrom(START_BLOCK_NUMBERS);
     this.blockColor = () => this.getRandomFrom(COLORS);
     this.block = this.getBlock(this.blockType(), this.blockColor());
-    this.selector = `#status${this.keyRuls === 'wasd' ? 1 : 2}`;
+    this.selector = `#status${this.player === 1 ? 1 : 2}`;
     this.element = document.querySelector(this.selector);
-  /*  this.scopeElem = this.element.querySelector('[data-role="scope"]')
-    this.levelElem = this.element.querySelector('[data-role="level"]')
-    this.tetrisScopeElem = this.element.querySelector('[data-role="tetris"]')*/
+    this.store = this.player === 1 ? rootStore.scopesPlayer1 : rootStore.scopesPlayer2
+    this.level = this.store.level;
+    this.scope = this.store.scopes;
+    this.tetrisScope = this.store.tetris;
+    this.addScopes = this.store.addScopes;
+    this.addTetris = this.store.addTetris;
   };
 
 
@@ -49,6 +54,14 @@ class Tetris {
     this.bind();
     requestAnimationFrame(this.tick)
   };
+
+  setPause = () => {
+    this.pause = !this.pause;
+    if (!this.pause) {
+      requestAnimationFrame(this.tick)
+    }
+  }
+
 
   tick = (timestamp) => {
     if (timestamp >= this.downTime) {
@@ -65,9 +78,10 @@ class Tetris {
           this.blockColor()
         )
         if (!this.canBlockExists(this.block)) {
-          this.element.insertAdjacentHTML('beforeend', `<p>конец игры. всего очков ${this.scope * 100}</p>`);
+          alert(`конец игры. всего очков ${this.scope * 100}`);
           return
         }
+
       }
       this.downTime = timestamp + this.getDownTime()
     }
@@ -92,16 +106,13 @@ class Tetris {
   }
 
   setScore = (lines) => {
- /*   this.scope += lines;
-    this.level = 1 + parseInt(this.scope / 3);
-    if (lines >= 4) {
-      this.tetrisScope++;
-      this.scope += 3
-    }
-
-    this.scopeElem.textContent = this.scope * 100;
-    this.levelElem.textContent = this.level;
-    this.tetrisScopeElem.textContent = this.tetrisScope;*/
+    this.scope += lines;
+       if (lines >= 4) {
+         this.tetrisScope++;
+         this.scope += 3
+       }
+       this.addScopes(this.scope);
+       this.addTetris(this.tetrisScope);
   }
 
   setField = (x, y, value) => {
@@ -312,7 +323,7 @@ class Tetris {
   };
 
   bind = () => {
-    const keyType = this.keyRuls === 'wasd' ? 0 : 1;
+    const keyType = this.player === 1 ? 0 : 1;
     const keyList = [
       ['KeyW', 'KeyA', 'KeyS', 'KeyD'],
       ['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight']
@@ -333,7 +344,7 @@ class Tetris {
     })
   };
 
-  // Свдиг блока влево
+// Свдиг блока влево
   moveBlockLeft = () => {
     const blockCopy = this.block.getCopy();
     blockCopy.x = blockCopy.x - 1;
@@ -342,7 +353,7 @@ class Tetris {
     }
   };
 
-  // Свдиг блока вправо
+// Свдиг блока вправо
   moveBlockRight = () => {
     const blockCopy = this.block.getCopy();
     blockCopy.x = blockCopy.x + 1;
@@ -351,7 +362,7 @@ class Tetris {
     }
   };
 
-  // Поворот блока
+// Поворот блока
   rotateBlock = () => {
     const blockCopy = this.block.getNextBlock();
     if (this.canBlockExists(blockCopy)) {
@@ -359,7 +370,7 @@ class Tetris {
     }
   };
 
-  // Свдиг блока вниз
+// Свдиг блока вниз
   moveBlockDown = () => {
     const blockCopy = this.block.getCopy();
     blockCopy.y = blockCopy.y + 1;
@@ -368,13 +379,11 @@ class Tetris {
     }
   }
 }
+
 export default Tetris;
 
 /// TODO сделать предпоказ фигур,
 // реализовать какую-нибудь комбобобму по 10 очков за точку.. подумать
-
-//Защищённый - LcGzh32Hr7jGelqxiGfS
-//Сервисный - f0a5093cf0a5093cf0a5093c4af0c395fdff0a5f0a5093cab6d8aee351e1d98f3806678
 
 
 

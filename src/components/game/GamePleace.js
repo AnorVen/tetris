@@ -8,23 +8,26 @@ class GamePleace extends Component {
   constructor(props) {
     super(props);
     this.canvas = React.createRef()
-
+    this.tetris = null;
   }
 
   componentDidMount() {
-    const tetris = new Tetris(
+    this.tetris = new Tetris(
       this.canvas.current,
-      'wasd');
+      'player1');
+  }
+
+  playHandler = ()=>{
+    this.tetris.start()
   }
 
 
   render() {
-
     return (
-
         <div className="player1">
           <Player/>
           <div className="canvas1">
+            <button onClick={this.playHandler}>play</button>
             <canvas ref={this.canvas} width={300} height={600}>Ваш браузер не поддерживает canvas.
             </canvas>
           </div>

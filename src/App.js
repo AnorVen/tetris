@@ -40,7 +40,7 @@ class App extends Component {
           break;
         case 'VKWebAppGetUserInfoResult':
           console.log('info', event);
-          this.props.stores.users.setUser1(event.detail.data)
+          this.props.stores.user1.setUser(event.detail.data)
           break;
         case 'VKWebAppAllowNotificationsResult':
           console.log('Noti', event);

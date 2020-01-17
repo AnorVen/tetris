@@ -14,8 +14,12 @@ class Index{
 
     this.storage = window.localStorage;
 
-    this.scopes = new Scopes(this);
-    this.users = new User(this);
+    this.scopesPlayer1 = new Scopes(this);
+    this.scopesPlayer2 = new Scopes(this);
+    this.user1 = new User(this);
+    this.user2 = new User(this);
+    this.user1.setScopes(this.scopesPlayer1);
+    this.user2.setScopes(this.scopesPlayer2);
   }
 }
 

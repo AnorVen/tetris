@@ -11,7 +11,10 @@ export default class Scopes {
 
   @observable tetris = 0;
 
-  @computed level = 1 + this.scopes % 3;
+  @computed get level() {
+    return 1 + (this.scopes - (this.scopes % 3)/3);
+  }
+
 
   @action addScopes = (scope) => {
     this.scopes += scope
